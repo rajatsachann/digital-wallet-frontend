@@ -2,57 +2,60 @@
   <div v-if="showCard" class="card">
     <h2>Register New Wallet</h2>
     <form @submit.prevent="submitForm">
-      <div>
-        <input type="text" v-model="name" placeholder="Name" required />
+      <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" id="name" v-model="name" required />
       </div>
-      <div>
+      <div class="form-group">
+        <label for="initialBalance">Initial Balance:</label>
         <input
           type="number"
+          id="initialBalance"
           v-model="initialBalance"
           min="0"
-          placeholder="Intial Balance"
         />
       </div>
       <button type="submit">Submit</button>
     </form>
   </div>
   <div v-else>
-    <OtherCards />
+    <wallet-details :wallet-id="walletId" />
+    <amount-card :wallet-id="walletId" @transaction-made="fetchWalletDetails" />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import OtherCards from "./OtherCard.vue";
+import { ref } from "vue";
+import axios from "axios";
+import WalletDetails from "./WalletDetails.vue";
+import AmountCard from "./AmountCard.vue";
 
 const showCard = ref(true);
 const name = ref("");
 const initialBalance = ref(0);
+const walletId = ref(null);
 
-const checkRegistrationStatus = () => {
-  const wallet = localStorage.getItem("wallet");
-  if (wallet) {
+const submitForm = async () => {
+  try {
+    const response = await axios.post("/api/setup", {
+      name: name.value,
+      initialBalance: initialBalance.value,
+    });
+    walletId.value = response.data.data.id;
+    localStorage.setItem("walletId", walletId.value);
     showCard.value = false;
+  } catch (error) {
+    console.error("Error registering wallet:", error);
   }
 };
 
-onMounted(() => {
-  checkRegistrationStatus();
-});
-
-const submitForm = () => {
-  const wallet = {
-    name: name.value,
-    initialBalance: initialBalance.value,
-  };
-  localStorage.setItem("wallet", JSON.stringify(wallet));
-  showCard.value = false;
+const fetchWalletDetails = async () => {
+  // This function is passed to the amount card to update wallet details after transaction
 };
 </script>
 
 <style scoped>
 .card {
-  width: 100%;
   background-color: #333;
   color: #fff;
   padding: 20px;
@@ -60,16 +63,24 @@ const submitForm = () => {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+.form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+label {
+  flex: 1;
+  margin-right: 10px;
+}
+
 input {
-  display: block;
-  margin: 10px 0 10px;
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 20px;
+  flex: 2;
+  padding: 8px;
   border: none;
   border-radius: 4px;
-  background-color: lightgray;
-  color: black;
+  background-color: #555;
+  color: #fff;
 }
 
 button {
