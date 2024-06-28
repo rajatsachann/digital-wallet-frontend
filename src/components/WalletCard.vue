@@ -1,5 +1,5 @@
 <template>
-  <div v-if="showCard" class="card">
+  <div v-if="!walletId" class="card">
     <h2>Register New Wallet</h2>
     <form @submit.prevent="submitForm">
       <div class="form-group">
@@ -11,7 +11,7 @@
         <input
           type="number"
           id="initialBalance"
-          v-model="initialBalance"
+          v-model.number="initialBalance"
           min="0"
         />
       </div>
@@ -30,27 +30,22 @@ import axios from "axios";
 import WalletDetails from "./WalletDetails.vue";
 import AmountCard from "./AmountCard.vue";
 
-const showCard = ref(true);
 const name = ref("");
-const initialBalance = ref(0);
-const walletId = ref(null);
+const initialBalance = ref(0); // Ensure initialBalance is initialized properly
+const walletId = ref(localStorage.getItem("walletId"));
 
 const submitForm = async () => {
   try {
+    console.log("ib", initialBalance.value);
     const response = await axios.post("/api/setup", {
       name: name.value,
-      initialBalance: initialBalance.value,
+      balance: initialBalance.value,
     });
     walletId.value = response.data.data.id;
     localStorage.setItem("walletId", walletId.value);
-    showCard.value = false;
   } catch (error) {
     console.error("Error registering wallet:", error);
   }
-};
-
-const fetchWalletDetails = async () => {
-  // This function is passed to the amount card to update wallet details after transaction
 };
 </script>
 

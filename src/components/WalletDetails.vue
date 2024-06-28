@@ -1,5 +1,5 @@
 <template>
-  <div class="wallet-details-card">
+  <div class="wallet-details-card" v-if="walletDetails.name">
     <h3>Wallet Details</h3>
     <p><strong>Name:</strong> {{ walletDetails.name }}</p>
     <p><strong>Balance:</strong> {{ walletDetails.balance }}</p>
@@ -9,6 +9,7 @@
     </p>
     <p><strong>Wallet ID:</strong> {{ walletDetails.id }}</p>
   </div>
+  <div v-else>Loading...</div>
 </template>
 
 <script setup>
@@ -25,13 +26,21 @@ const fetchWalletDetails = async () => {
   try {
     const response = await axios.get(`/api/wallet/${props.walletId}`);
     walletDetails.value = response.data.data;
+    console.log(walletDetails.value);
   } catch (error) {
     console.error("Error fetching wallet details:", error);
   }
 };
 
 onMounted(fetchWalletDetails);
-watch(() => props.walletId, fetchWalletDetails);
+watch(
+  () => props.walletId,
+  (newVal, oldVal) => {
+    if (newVal !== oldVal) {
+      fetchWalletDetails();
+    }
+  }
+);
 </script>
 
 <style scoped>
@@ -41,5 +50,10 @@ watch(() => props.walletId, fetchWalletDetails);
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.loading {
+  color: #fff;
+  padding: 20px;
 }
 </style>
