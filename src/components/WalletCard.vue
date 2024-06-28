@@ -31,7 +31,7 @@ import WalletDetails from "./WalletDetails.vue";
 import AmountCard from "./AmountCard.vue";
 
 const name = ref("");
-const initialBalance = ref(0); // Ensure initialBalance is initialized properly
+const initialBalance = ref(0); // initialBalance is initialized
 const walletId = ref(localStorage.getItem("walletId"));
 
 const submitForm = async () => {

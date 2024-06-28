@@ -26,7 +26,6 @@ const fetchWalletDetails = async () => {
   try {
     const response = await axios.get(`/api/wallet/${props.walletId}`);
     walletDetails.value = response.data.data;
-    console.log(walletDetails.value);
   } catch (error) {
     console.error("Error fetching wallet details:", error);
   }
@@ -50,6 +49,7 @@ watch(
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  margin-bottom: 10px;
 }
 
 .loading {

@@ -1,9 +1,9 @@
 <script setup>
-import TransactionList from "../components/TransactionList.vue";
+import TransactionTable from "../components/TransactionTable.vue";
 </script>
 <template>
   <main>
-    <TransactionList />
+    <TransactionTable />
   </main>
 </template>
 

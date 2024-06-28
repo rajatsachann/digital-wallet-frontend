@@ -58,6 +58,7 @@ const submitTransaction = async () => {
       description: description.value,
       type: transactionType.value,
     });
+    window.location.reload();
     emit("transaction-made"); // Emit event after successful transaction
     resetForm();
   } catch (error) {
