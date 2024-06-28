@@ -4,11 +4,32 @@
     <form @submit.prevent="submitTransaction">
       <div class="form-group">
         <label for="amount">Amount:</label>
-        <input type="number" id="amount" v-model="amount" />
+        <input type="number" id="amount" v-model.number="amount" />
       </div>
       <div class="form-group">
         <label for="description">Description:</label>
         <input type="text" id="description" v-model="description" />
+      </div>
+      <div class="form-group">
+        <label>Transaction Type:</label>
+        <label for="credit">
+          <input
+            type="radio"
+            id="credit"
+            value="CREDIT"
+            v-model="transactionType"
+          />
+          Credit
+        </label>
+        <label for="debit">
+          <input
+            type="radio"
+            id="debit"
+            value="DEBIT"
+            v-model="transactionType"
+          />
+          Debit
+        </label>
       </div>
       <button type="submit">Submit</button>
     </form>
@@ -16,7 +37,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, defineEmits } from "vue";
 import axios from "axios";
 
 const props = defineProps({
@@ -25,21 +46,29 @@ const props = defineProps({
 
 const amount = ref(0);
 const description = ref("");
+const transactionType = ref("CREDIT"); // Default transaction type
 
 const emit = defineEmits(["transaction-made"]);
 
 const submitTransaction = async () => {
   try {
-    await axios.post(`/api/transact/${props.walletId}`, {
+    // Send transaction data including type
+    const response = await axios.post(`/api/transact/${props.walletId}`, {
       amount: amount.value,
       description: description.value,
+      type: transactionType.value,
     });
-    emit("transaction-made");
-    amount.value = 0;
-    description.value = "";
+    emit("transaction-made"); // Emit event after successful transaction
+    resetForm();
   } catch (error) {
     console.error("Error making transaction:", error);
   }
+};
+
+const resetForm = () => {
+  amount.value = 0;
+  description.value = "";
+  transactionType.value = "CREDIT"; // Reset transaction type to default
 };
 </script>
 
@@ -63,7 +92,12 @@ label {
   margin-right: 10px;
 }
 
-input {
+input[type="radio"] {
+  margin-right: 5px;
+}
+
+input[type="number"],
+input[type="text"] {
   flex: 2;
   padding: 8px;
   border: none;
