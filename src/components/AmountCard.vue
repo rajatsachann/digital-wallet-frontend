@@ -4,7 +4,7 @@
     <form @submit.prevent="submitTransaction">
       <div class="form-group">
         <label for="amount">Amount:</label>
-        <input type="number" id="amount" v-model.number="amount" />
+        <input type="number" id="amount" v-model.number="amount" step="0.0001" />
       </div>
       <div class="form-group">
         <label for="description">Description:</label>

@@ -12,6 +12,7 @@
           type="number"
           id="initialBalance"
           v-model.number="initialBalance"
+          step="0.0001"
           min="0"
         />
       </div>
