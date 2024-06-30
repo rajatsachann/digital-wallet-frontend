@@ -18,7 +18,8 @@ const app = createApp(App);
 app.use(router);
 app.use(vuetify);
 
-const baseURL = process.env.VUE_APP_API_BASE_URL || "http://localhost:3000";
+const baseURL =
+  import.meta.env.VITE_APP_API_BASE_URL || "http://localhost:3000";
 axios.defaults.baseURL = baseURL;
 axios.defaults.headers.common["Content-Type"] = "application/json";
 
